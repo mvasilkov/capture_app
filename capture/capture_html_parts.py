@@ -38,6 +38,14 @@ class CaptureParts(Capture):
         self.counters = defaultdict(int)
         self.captured_pages = set()
 
+    def request(self, flow: http.HTTPFlow):
+        canon_addr: str = get_canon_addr(flow.request.url)
+        if good_addr(canon_addr) and canon_addr.endswith('.html'):
+            key = get_key(canon_addr)
+            self.counters[key] += 1
+
+            flow.capture_part = f'.part{self.counters[key]}.html'
+
     def should_capture(self, flow: http.HTTPFlow):
         content_type = flow.response.headers.get('content-type', 'unknown content type')
         canon_addr = get_canon_addr(flow.request.url)
@@ -48,11 +56,9 @@ class CaptureParts(Capture):
             if content_type != 'text/html':
                 return get_name(canon_addr)
 
-            key = get_key(canon_addr)
-            self.counters[key] += 1
-
             assert 'referer' in flow.request.headers
-            return get_name(flow.request.headers['referer']) + f'.part{self.counters[key]}.html'
+            assert hasattr(flow, 'capture_part')
+            return get_name(flow.request.headers['referer']) + flow.capture_part
 
         return None
 
