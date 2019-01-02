@@ -36,15 +36,16 @@ class CaptureParts(Capture):
         super().__init__()
 
         self.counters = defaultdict(int)
+        self.addr_part = dict()
         self.captured_pages = set()
 
     def request(self, flow: http.HTTPFlow):
         canon_addr: str = get_canon_addr(flow.request.url)
-        if good_addr(canon_addr) and canon_addr.endswith('.html'):
+        if (good_addr(canon_addr) and canon_addr.endswith('.html')
+                and canon_addr not in self.addr_part):
             key = get_key(canon_addr)
             self.counters[key] += 1
-
-            flow.capture_part = f'.part{self.counters[key]}.html'
+            self.addr_part[canon_addr] = f'.part{self.counters[key]}.html'
 
     def should_capture(self, flow: http.HTTPFlow):
         content_type = flow.response.headers.get('content-type', 'unknown content type')
@@ -57,8 +58,8 @@ class CaptureParts(Capture):
                 return get_name(canon_addr)
 
             assert 'referer' in flow.request.headers
-            assert hasattr(flow, 'capture_part')
-            return get_name(flow.request.headers['referer']) + flow.capture_part
+            assert canon_addr in self.addr_part
+            return get_name(flow.request.headers['referer']) + self.addr_part[canon_addr]
 
         return None
 
