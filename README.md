@@ -14,6 +14,7 @@ Usage
 ```sh
 mitmdump -p 2019 -q -s capture/capture_html_parts.py --anticache
 chrome --proxy-server=localhost:2019
+# open -a 'Google Chrome' --args --proxy-server=localhost:2019
 ```
 
 **Scanning**
