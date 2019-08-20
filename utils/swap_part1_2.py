@@ -2,8 +2,10 @@
 
 from pathlib import Path
 
+from .captured_files import content_location
 
-def run():
+
+def swap_part1_2():
     p = Path()
     part1 = list(p.glob('Captured Files/*.part1.html'))
     part2 = list(p.glob('Captured Files/*.part2.html'))
@@ -11,6 +13,13 @@ def run():
     if len(part1) == 1 and len(part2) == 1:
         part1 = part1[0]
         part2 = part2[0]
+        loc1 = content_location(part1)
+        loc2 = content_location(part2)
+
+        if loc1.endswith('?') or not loc2.endswith('?'):
+            print(f'Not swapping `{part1}` and `{part2}`')
+            return
+
         print(f'Swapping `{part1}` and `{part2}`')
         a = part1.with_suffix('.a')
         part1.rename(a)
@@ -22,4 +31,4 @@ def run():
 
 
 if __name__ == '__main__':
-    run()
+    swap_part1_2()

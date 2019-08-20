@@ -5,10 +5,10 @@ from urllib.parse import urlparse, urlunparse
 from mitmproxy import http
 
 from capture import Capture
-from utils import dont_google
+from utils.encodings import dont_google
 
-GOOD_ORIGIN = dont_google('uggcf://ernqre.obbxzngr.pbz/')
-GOOD_PATH = dont_google('/pbagragf/')
+GOOD_ORIGIN = dont_google('uggcf://ernqre.obbxzngr.pbz/-')
+GOOD_PATH = dont_google('/pbagragf/-')
 
 
 def good_addr(a: str):
