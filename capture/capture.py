@@ -16,6 +16,11 @@ class Capture:
         saveas = self.should_capture(flow)
         if saveas is not None:
             print('Capture', flow.request.url, 'as', saveas)
-            contents = f'Content-Location: {flow.request.url}\n\n'.encode('utf-8')
-            contents += flow.response.get_content(strict=True)
+
+            if saveas.endswith('.html'):
+                contents = f'Content-Location: {flow.request.url}\n\n'.encode('utf-8')
+                contents += flow.response.get_content(strict=True)
+            else:
+                contents = flow.response.get_content(strict=True)
+
             (self.path / saveas).write_bytes(contents)
