@@ -1,8 +1,12 @@
 from collections import defaultdict
 from pathlib import Path, PurePath
 from urllib.parse import urlparse, urlunparse
+import sys
 
 from mitmproxy import http
+
+OUR_ROOT = Path(__file__).resolve().parents[1]
+sys.path.append(str(OUR_ROOT))
 
 from capture import Capture
 from utils.encodings import dont_google
